@@ -1,20 +1,26 @@
 import { Router } from 'express';
-import { uuid } from 'uuidv4';
+import { startOfHour, parseISO } from 'date-fns';
+import AppontmentsRepository from '../repositories/AppointmentsRepository';
 
 const appointmentsRouter = Router();
-
-const appointments = [];
+const appontmentsRepository = new AppontmentsRepository();
 
 appointmentsRouter.post('/', (request, response) => {
     const { provider, date } = request.body;
 
-    const appointment = {
-        id: uuid(),
-        provider,
-        date,
-    };
+    const parseDate = startOfHour(parseISO(date));
 
-    appointments.push(appointment);
+    const findAppointmentInSameDate = appontmentsRepository.findByDate(
+        parseDate,
+    );
+
+    if (findAppointmentInSameDate) {
+        return response
+            .status(400)
+            .json({ message: 'This appointment is already bossoked' });
+    }
+
+    const appointment = appontmentsRepository.create(provider, parseDate);
 
     return response.json(appointment);
 });
