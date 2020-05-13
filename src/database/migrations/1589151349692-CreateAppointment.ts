@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import Appointment from '../../models/Appointment';
 
 export default class CreateAppointment1589151349692
     implements MigrationInterface {
@@ -10,7 +9,7 @@ export default class CreateAppointment1589151349692
                 columns: [
                     {
                         name: 'id',
-                        type: 'varchar',
+                        type: 'uuid',
                         isPrimary: true,
                         generationStrategy: 'uuid',
                         default: 'uuid_generate_v4()',
@@ -24,6 +23,16 @@ export default class CreateAppointment1589151349692
                         name: 'date',
                         type: 'timestamp with time zone',
                         isNullable: false,
+                    },
+                    {
+                        name: 'created_at',
+                        type: 'timestamp',
+                        default: 'now()',
+                    },
+                    {
+                        name: 'updated_at',
+                        type: 'timestamp',
+                        default: 'now()',
                     },
                 ],
             }),
